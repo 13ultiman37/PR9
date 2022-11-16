@@ -20,6 +20,7 @@ predictors = data.data
 target = data.target
 target_names = data.target_names
 
+
 print(predictors.head(5), '\n\nЦелевая переменная')
 print(target.head(5))
 print('Искомая цифра:\n', target_names)
@@ -44,7 +45,7 @@ model.fit(x_train, y_train)
 y_predict = model.predict(x_test)
 print('Предсказанные значения: \n', y_predict)
 print('Исходные значения: \n', np.array(y_test))
-print(classification_report(y_test, y_predict))
+print("\n", classification_report(y_test, y_predict))
 
 fig = px.imshow(confusion_matrix(y_test, y_predict), text_auto=True)
 fig.update_layout(xaxis_title='Target', yaxis_title='Prediction')
@@ -59,7 +60,7 @@ grid_search_svm = GridSearchCV(estimator=model2, param_grid=parameters, cv=6)
 grid_search_svm.fit(x_train, y_train)
 
 best_model = grid_search_svm.best_estimator_
-print(best_model.kernel)
+print("Лучшая модель с ядром: ", best_model.kernel)
 svm_preds = best_model.predict(x_test)
 print(classification_report(svm_preds, y_test))
 
@@ -74,6 +75,11 @@ model3 = KNeighborsClassifier()
 params = {"n_neighbors": number_of_neighbors}
 grid_search = GridSearchCV(estimator=model3, param_grid=params, cv=6)
 grid_search.fit(x_train, y_train)
-print(grid_search.best_score_)
-grid_search.best_estimator_
+print("Лучшее значение macro-average: ", grid_search.best_score_)
+print("Лучшая модель получается с k = : ", grid_search.best_estimator_)
+knn_preds = grid_search.predict(x_test)
+print(classification_report(knn_preds, y_test))
 
+fig3 = px.imshow(confusion_matrix(knn_preds, y_test), text_auto=True)
+fig3.update_layout(xaxis_title='Target', yaxis_title='Prediction')
+fig3.show()
